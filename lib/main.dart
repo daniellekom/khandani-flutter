@@ -1,8 +1,7 @@
-import 'package:auth/bloc_example/bloc/testbloc_bloc.dart';
+import 'package:auth/screens/auth.dart';
 import 'package:auth/screens/secondScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const AuthScreen(),
     );
 
   }
@@ -39,9 +38,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TestblocBloc>(
-      create: (context) => TestblocBloc(),
-      child: Scaffold(
+    return  Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
         ),
@@ -63,7 +60,6 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ),
         // This trailing comma makes auto-formatting nicer for build methods.
-      ),
-    );
+      );
   }
 }
