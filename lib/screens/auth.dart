@@ -1,3 +1,5 @@
+import 'package:auth/screens/home.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -13,6 +15,7 @@ class _AuthScreenState extends State<AuthScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _auth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   void toggleSignUp() {
     setState(() {
@@ -20,7 +23,48 @@ class _AuthScreenState extends State<AuthScreen> {
     });
   }
 
-  Future<void> authenticate() async {}
+  Future<void> authenticate() async {
+    try {
+      if (isSignUp) {
+        await signUp();
+      } else {
+        await signIn();
+      }
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (_) => const HomeScreen()));
+    } catch (e) {
+      print('exception $e');
+    }
+  }
+
+  Future<void> signUp() async {
+    final credential = await _auth.createUserWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+
+    if (credential.user != null) {
+      await _firestore.collection('users').doc(credential.user!.uid).set({
+        "email": emailController.text,
+        "userId": credential.user!.uid,
+        "created": DateTime.now().millisecondsSinceEpoch,
+        "timestamp": DateTime.now().millisecondsSinceEpoch,
+      });
+    }
+  }
+
+  Future<void> signIn() async {
+    final credential = await _auth.signInWithEmailAndPassword(
+      email: emailController.text,
+      password: passwordController.text,
+    );
+
+    if (credential.user != null) {
+      await _firestore.collection('users').doc(credential.user!.uid).update({
+        "timestamp": DateTime.now().millisecondsSinceEpoch,
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
