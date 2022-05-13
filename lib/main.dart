@@ -1,5 +1,6 @@
 import 'package:auth/screens/auth.dart';
-import 'package:auth/screens/secondScreen.dart';
+import 'package:auth/screens/home.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
@@ -20,46 +21,33 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const AuthScreen(),
+      home: const Home(),
     );
 
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
 
-  final String title;
+class Home extends StatefulWidget {
+  const Home({ Key? key }) : super(key: key);
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<Home> createState() => _HomeState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomeState extends State<Home> {
+
+final _auth = FirebaseAuth.instance;
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-        appBar: AppBar(
-          title: Text(widget.title),
-        ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children:  <Widget>[
-              const Text(
-                'You have pushed the button this many times:',
-              ),
-              TextButton(onPressed: (){
-                  Navigator.of(context).push (MaterialPageRoute(builder: (context) {
-                   return const SecondScreen();
-                  },));
-                // Navigator.of(context).pop();
-              }, 
-              child: const Text ('click me'))
-            ],
-          ),
-        ),
-        // This trailing comma makes auto-formatting nicer for build methods.
-      );
+    return StreamBuilder<User?>(
+      stream: _auth.authStateChanges(),
+      builder: ((context, snapshot) {
+    
+        if(snapshot.data == null) return const AuthScreen();
+
+        return const HomeScreen();
+    }));
   }
 }
