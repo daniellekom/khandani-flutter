@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "365503772898",
+    "project_id": "khandani-login",
+    "storage_bucket": "khandani-login.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:365503772898:android:c511280592bf12db3906bb",
+        "android_client_info": {
+          "package_name": "com.khandani.auth"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "365503772898-31hos2ml7us5ljtk73tebs5046ua5ii7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBITfYHiOBABbfSOA_sgmzmW0IT7V3WHGo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "365503772898-31hos2ml7us5ljtk73tebs5046ua5ii7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "365503772898-clkm2f1qcatp3u36s5ba4o3nc74mnlic.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.khandani.auth"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,4 +1,6 @@
 import 'package:auth/screens/home.dart';
+import 'package:auth/utils/validators.dart';
+import 'package:auth/widgets/our_text_field.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  GlobalKey<FormState> formKey = GlobalKey();
   bool isSignUp = false;
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -25,6 +28,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
   Future<void> authenticate() async {
     try {
+      if (!formKey.currentState!.validate()) return;
       if (isSignUp) {
         await signUp();
       } else {
@@ -65,7 +69,7 @@ class _AuthScreenState extends State<AuthScreen> {
       });
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -73,38 +77,35 @@ class _AuthScreenState extends State<AuthScreen> {
     return Scaffold(
       backgroundColor: Colors.blueGrey,
       // appBar: AppBar(title: const Text('Auth'),),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: size.height * 0.10),
-            Image.asset('assets/images/logo.png'),
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white24,
-                borderRadius: BorderRadius.circular(30),
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-              height: size.height * 0.40,
-              width: size.width * 0.90,
-              child: Column(
-                children: [
-                  spacing,
-                  OurTextField(labelText: 'Email', controller: emailController),
-                  spacing,
-                  OurTextField(
-                    labelText: 'Password',
-                    obscure: true,
-                    controller: passwordController,
-                  ),
-                  spacing,
-                  AuthButton(isSignUp: isSignUp, onTap: authenticate),
-                  const Spacer(),
-                  ToggleSignUpBtn(
-                      toggleSignUp: toggleSignUp, isSignUp: isSignUp)
-                ],
-              ),
+      body: Form(
+        key: formKey,
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                SizedBox(height: size.height * 0.10),
+                Image.asset('assets/images/logo.png'),
+                spacing,
+                spacing,
+                OurTextField(
+                    validate: Validator.email,
+                    labelText: 'Email',
+                    controller: emailController),
+                spacing,
+                OurTextField(
+                  validate: Validator.password,
+                  labelText: 'Password',
+                  obscure: true,
+                  controller: passwordController,
+                ),
+                spacing,
+                AuthButton(isSignUp: isSignUp, onTap: authenticate),
+                // const Spacer(),
+                ToggleSignUpBtn(toggleSignUp: toggleSignUp, isSignUp: isSignUp)
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );
@@ -133,11 +134,11 @@ class ToggleSignUpBtn extends StatelessWidget {
                 isSignUp
                     ? 'Already have an account?'
                     : 'Don\'t have an account? ',
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
               Text(
                 isSignUp ? 'Sign in' : 'Sign Up',
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.orange,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -176,40 +177,6 @@ class AuthButton extends StatelessWidget {
             isSignUp ? 'Sign Up' : 'Sign In',
           ),
         ),
-      ),
-    );
-  }
-}
-
-class OurTextField extends StatelessWidget {
-  final String labelText;
-  final bool obscure;
-  final TextEditingController controller;
-  const OurTextField({
-    Key? key,
-    required this.labelText,
-    this.obscure = false,
-    required this.controller,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(10, 2, 10, 2),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5),
-          border: Border.all(color: Colors.white)),
-      child: TextField(
-        controller: controller,
-        style: const TextStyle(color: Colors.white),
-        obscureText: obscure,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            labelText: labelText,
-            labelStyle: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            )),
       ),
     );
   }
